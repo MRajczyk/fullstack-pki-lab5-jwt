@@ -2,6 +2,7 @@ import { UserModel } from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { config } from "../../config.js";
+
 // Validate email address
 export async function validateEmailAccessibility(email) {
     return await UserModel.findOne({
@@ -21,7 +22,7 @@ export const generateTokens = (req, user) => {
         },
         config.TOKEN_SECRET_JWT,
         {
-            expiresIn: 120,
+            expiresIn: "1h",
         }
     );
 
@@ -33,7 +34,7 @@ export const generateTokens = (req, user) => {
         },
         config.TOKEN_SECRET_JWT,
         {
-            expiresIn: 480,
+            expiresIn: "1h",
         }
     );
 
@@ -56,13 +57,13 @@ export const createUser = async (req, res, next) => {
                     if (err) 
                         next(err);                        
                 });
-                if(createUser) {
+                if(createdUser) {
                     res.status(200).json({
                         message: "The user was created",
                     });
                 }
             } catch (e) {
-                res.status(400).json({message: "Missing request parameters"});
+                res.status(422).json({message: "Missing request parameters"});
                 console.log(e.message);
             }
             
@@ -84,11 +85,11 @@ export const loginUser = async (req, res, next) => {
             res.json(generateTokens(req, userDoc));
         } 
         else {
-            res.status(400).json('Wrong credentials!');
+            res.status(401).json('Wrong credentials!');
         }
     }
     catch(e) {
-        res.status(400).json('Invalid params');
+        res.status(422).json('Invalid params');
     } 
 };
 
@@ -130,7 +131,7 @@ export const refreshTokenVerify = (req, res, next) => {
             error: "Token is not complete",
         });
     }
-    jwt.verify(REFRESH_TOKEN[1], TOKEN_SECRET_JWT, function (err, payload) {
+    jwt.verify(REFRESH_TOKEN[1], config.TOKEN_SECRET_JWT, function (err, payload) {
         if (err) {
             return res.status(401).send({
                 error: "Token refresh is invalid",
