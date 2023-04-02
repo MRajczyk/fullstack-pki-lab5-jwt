@@ -19,21 +19,22 @@ const UserSchema = new Schema({
   password: { 
     type: String, 
     trim: true, 
-    required: true
+    required: true,
+    select: true
   }, 
   role: { 
     type: String, 
     trim: true, 
     default: 'USER' 
   } 
-}, 
+},
 { 
   versionKey: false 
 }) 
 
-export const UserModel = model('User', UserSchema);
-
-UserSchema.pre('save', function (next) { 
-  this.password = bcrypt.hashSync(this.password, saltRounds) 
-  next() 
+UserSchema.pre('save', async function (next) {
+  this.password = await bcrypt.hashSync(this.password, saltRounds)
+  next()
 })
+
+export const UserModel = model('User', UserSchema);
