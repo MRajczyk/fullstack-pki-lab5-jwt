@@ -4,7 +4,8 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import routes from './routes.js'
 import { config } from '../config.js';
-import { initializeData } from './seed/user-seeder.js'
+import { initializeUser } from './seed/user-seeder.js'
+import { initializeData } from './seed/data-seeder.js'
 
  
 // Initialize app 
@@ -26,6 +27,7 @@ mongoose.connect(config.URI_MONGO, {
 
  
 mongoose.connection.on('connected', () => { 
+  initializeUser() 
   initializeData() 
   console.log('Initialize user') 
 }); 

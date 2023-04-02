@@ -2,14 +2,14 @@ import { UserModel } from '../models/user.js' ;
 import { saltRounds } from '../models/user.js';
 import bcrypt from "bcrypt";
 
-async function isUsersExist() { 
+async function doUsersExist() { 
   const exec = await UserModel.find().exec() 
   return exec.length > 0 
 } 
 
 // Initialize first user 
-export const initializeData = async () => { 
-  if(!await isUsersExist()) { 
+export const initializeUser = async () => { 
+  if(!await doUsersExist()) { 
     const user = await UserModel.create({ 
         role: "ADMIN", 
         name: "admin", 
