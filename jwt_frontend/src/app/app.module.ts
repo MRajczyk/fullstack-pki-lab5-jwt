@@ -12,6 +12,9 @@ import { TopbarComponent } from './components/topbar/topbar.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
+import {AuthService} from "./services/auth.service";
+import {AuthGuardService} from "./services/auth-guard.service";
+import {JwtHelperService} from "@auth0/angular-jwt";
 
 @NgModule({
   declarations: [
@@ -30,7 +33,11 @@ import {MatButtonModule} from "@angular/material/button";
     MatIconModule,
     MatButtonModule
   ],
-  providers: [],
+  providers: [AuthService, AuthGuardService,
+    {
+      provide: JwtHelperService,
+      useFactory: () => new JwtHelperService()
+    }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

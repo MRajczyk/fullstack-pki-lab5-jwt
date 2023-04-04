@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {AuthService} from "../services/auth.service";
+import {JwtHelperService} from "@auth0/angular-jwt";
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,6 @@ export class AppComponent {
 
   logged: boolean = false;
   title = 'jwt_frontend';
-  constructor(public authService: AuthService) {
+  constructor(public authService: AuthService, private _jwtHelper: JwtHelperService) {
   }
 }
