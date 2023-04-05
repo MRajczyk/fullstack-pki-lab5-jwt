@@ -1,4 +1,4 @@
-export interface BackendLoginResponseModel {
+export interface LoginResponseModel {
   accessToken: string;
   refreshToken: string;
 }

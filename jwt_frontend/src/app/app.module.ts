@@ -16,7 +16,9 @@ import {AuthService} from "./services/auth.service";
 import {AuthGuardService} from "./services/auth-guard.service";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {FormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {TokenInterceptorService} from "./services/token-interceptor.service";
+import {UserService} from "./services/users.service";
 
 @NgModule({
   declarations: [
@@ -37,10 +39,15 @@ import {HttpClientModule} from "@angular/common/http";
     FormsModule,
     HttpClientModule
   ],
-  providers: [AuthService, AuthGuardService,
+  providers: [AuthService, AuthGuardService, UserService,
     {
       provide: JwtHelperService,
       useFactory: () => new JwtHelperService()
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptorService,
+      multi: true
     }],
   bootstrap: [AppComponent]
 })

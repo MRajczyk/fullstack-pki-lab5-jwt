@@ -4,7 +4,8 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {environment} from "../../environments/environment";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Router} from "@angular/router";
-import {BackendLoginResponseModel} from "../models/backend-login-response-model";
+import {LoginResponseModel} from "../models/login-response-model";
+
 @Injectable()
 export class AuthService {
   public redirectTo: string = '/';
@@ -13,15 +14,13 @@ export class AuthService {
   private hasLoginErrors = new BehaviorSubject<boolean>(false);
   public hasLoginErrors$ = this.hasLoginErrors.asObservable();
 
-
   constructor(public jwtHelper: JwtHelperService, private http: HttpClient, private router: Router) {}
   // ...
   public isAuthenticated(): boolean {
     const token = sessionStorage.getItem('token');
     // Check whether the token is expired and return
     // true or false
-    //return !this.jwtHelper.isTokenExpired(token);
-    return token ? true : false;
+    return !this.jwtHelper.isTokenExpired(token);
   }
 
   logIn(email: string, password: string) {
@@ -29,7 +28,7 @@ export class AuthService {
       .set('email', email)
       .set('password', password);
 
-    const returnVal: Observable<BackendLoginResponseModel> = this.http.post<BackendLoginResponseModel>(environment.url + this.endpoint + '/signin', payload);
+    const returnVal: Observable<LoginResponseModel> = this.http.post<LoginResponseModel>(environment.url + this.endpoint + '/signin', payload);
 
     returnVal.subscribe({
       next: returnVal => {
