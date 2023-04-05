@@ -9,7 +9,7 @@ import {JwtHelperService} from "@auth0/angular-jwt";
 })
 export class AppComponent {
 
-  logged: boolean = false;
+  //logged: boolean = false;
   title = 'jwt_frontend';
   constructor(public authService: AuthService, private _jwtHelper: JwtHelperService) {
   }

@@ -10,7 +10,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private authService: AuthService) { }
 
-  public name: string = '';
+  public email: string = '';
   public password: string = '';
   public loginFailed!: boolean;
 
@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.authService.logIn(this.name, this.password);
+    this.authService.logIn(this.email, this.password);
   }
 
 }

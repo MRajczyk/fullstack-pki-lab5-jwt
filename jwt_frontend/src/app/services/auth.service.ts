@@ -2,40 +2,41 @@ import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import {BehaviorSubject, Observable} from "rxjs";
 import {environment} from "../../environments/environment";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {Router} from "@angular/router";
+import {BackendLoginResponseModel} from "../models/backend-login-response-model";
 @Injectable()
 export class AuthService {
   public redirectTo: string = '/';
-  private endpoint: string = '/users';
-  private user: User | undefined = undefined;
+  private endpoint: string = '/auth';
 
   private hasLoginErrors = new BehaviorSubject<boolean>(false);
   public hasLoginErrors$ = this.hasLoginErrors.asObservable();
 
 
-  constructor(public jwtHelper: JwtHelperService) {}
+  constructor(public jwtHelper: JwtHelperService, private http: HttpClient, private router: Router) {}
   // ...
   public isAuthenticated(): boolean {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     // Check whether the token is expired and return
     // true or false
-    return !this.jwtHelper.isTokenExpired(token);
+    //return !this.jwtHelper.isTokenExpired(token);
+    return token ? true : false;
   }
 
-  logIn(name: string, password: string) {
-    const user: Observable<User> = this.http.post<User>(environment.url + this.endpoint + '/login', {
-      name: name,
-      password: password
-    });
+  logIn(email: string, password: string) {
+    const payload = new HttpParams()
+      .set('email', email)
+      .set('password', password);
 
-    user.subscribe({
-      next: user => {
-        this.user = user;
-        sessionStorage.setItem('token', btoa(name + ':' + password));
-        sessionStorage.setItem('user', JSON.stringify(user));
+    const returnVal: Observable<BackendLoginResponseModel> = this.http.post<BackendLoginResponseModel>(environment.url + this.endpoint + '/signin', payload);
+
+    returnVal.subscribe({
+      next: returnVal => {
+        sessionStorage.setItem('token', returnVal.accessToken);
 
         if(!environment.production) {
-          console.log('user: ', user);
-          console.log('token: ', sessionStorage.getItem('token'))
+          console.log('token: ', returnVal.accessToken);
         }
 
         this.hasLoginErrors.next(false);
@@ -49,8 +50,6 @@ export class AuthService {
   }
 
   logOut(): void {
-    sessionStorage.removeItem('user');
     sessionStorage.removeItem('token');
   }
-
 }
