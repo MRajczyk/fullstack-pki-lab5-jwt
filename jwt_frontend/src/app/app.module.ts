@@ -15,6 +15,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {AuthService} from "./services/auth.service";
 import {AuthGuardService} from "./services/auth-guard.service";
 import {JwtHelperService} from "@auth0/angular-jwt";
+import { AuthFormComponent } from './components/auth-form/auth-form.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import {JwtHelperService} from "@auth0/angular-jwt";
     LoggedInComponent,
     AdminComponent,
     TopbarComponent,
+    AuthFormComponent,
   ],
   imports: [
     BrowserModule,

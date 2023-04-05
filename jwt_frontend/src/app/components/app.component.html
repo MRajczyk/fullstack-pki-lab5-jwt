@@ -1,14 +1,11 @@
-<div class="example-container">test</div>
-<div *ngIf="logged">
+<div *ngIf="authService.isAuthenticated()">
   <nav class="top-bar-content">
     <app-topbar></app-topbar>
   </nav>
-
   <main class="router-outlet-content">
     <router-outlet></router-outlet>
   </main>
 </div>
-<div>test!</div>
-<app-login *ngIf="!logged"></app-login>
+<app-login *ngIf="!authService.isAuthenticated()"></app-login>
 
 
