@@ -13,6 +13,8 @@ export class AuthService {
 
   private hasLoginErrors = new BehaviorSubject<boolean>(false);
   public hasLoginErrors$ = this.hasLoginErrors.asObservable();
+  private hasRegisterErrors = new BehaviorSubject<boolean>(false);
+  public hasRegisterErrors$ = this.hasRegisterErrors.asObservable();
 
   constructor(public jwtHelper: JwtHelperService, private http: HttpClient, private router: Router) {}
   // ...
@@ -29,7 +31,6 @@ export class AuthService {
       .set('password', password);
 
     const returnVal: Observable<LoginResponseModel> = this.http.post<LoginResponseModel>(environment.url + this.endpoint + '/signin', payload);
-
     returnVal.subscribe({
       next: returnVal => {
         sessionStorage.setItem('token', returnVal.accessToken);
@@ -44,6 +45,28 @@ export class AuthService {
       error: err => {
         this.hasLoginErrors.next(true);
         console.log(err.message);
+      }
+    });
+  }
+
+  register(email: string, password: string, name: string) {
+    const payload = new HttpParams()
+      .set('email', email)
+      .set('name', name)
+      .set('password', password);
+
+    const returnVal: Observable<{message: string}> = this.http.post<{message: string}>(environment.url + this.endpoint + '/register', payload);
+    returnVal.subscribe({
+      next: returnVal => {
+        if(!environment.production) {
+          console.log('Register status: ', returnVal.message);
+        }
+        this.hasRegisterErrors.next(false);
+        this.router.navigate([this.redirectTo]);
+      },
+      error: err => {
+        this.hasRegisterErrors.next(true);
+        console.log('Register status: ', err.message);
       }
     });
   }

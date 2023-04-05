@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {UserService} from "../../services/users.service";
-import {User} from "../../models/user-model";
+import {DataService} from "../../services/data.service";
+import {Data} from "../../models/data-model";
 
 @Component({
   selector: 'app-home',
@@ -8,15 +8,15 @@ import {User} from "../../models/user-model";
   styleUrls: ['./home.component.css']
 })
 
-export class HomeComponent implements OnInit {
-  constructor(private userService: UserService) { }
+export class HomeComponent {
+  constructor(private dataService: DataService) { }
 
-  users: User[] = [];
+  data: Data | undefined = undefined;
   onGetUsers() {
-    this.userService.getUsers()
-      .subscribe((list) => {
-        console.log(list);
-        this.users = list.users;
+    this.dataService.getPublicData()
+      .subscribe((msg) => {
+        console.log(msg);
+        this.data = msg;
       })
   }
 

@@ -1,1 +1,9 @@
-<p>admin works!</p>
+<div *ngIf="authService.isAuthenticated()">
+  <p>Admin works!</p>
+  <ol>
+    <li *ngFor="let user of users">
+      <div class="list-item-name"><b>{{user._id}}</b> {{ user.email }}</div>
+    </li>
+  </ol>
+</div>
+<app-login *ngIf="!authService.isAuthenticated()"></app-login>

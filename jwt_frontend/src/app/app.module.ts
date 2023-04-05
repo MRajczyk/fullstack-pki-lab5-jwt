@@ -19,6 +19,7 @@ import {FormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {TokenInterceptorService} from "./services/token-interceptor.service";
 import {UserService} from "./services/users.service";
+import {DataService} from "./services/data.service";
 
 @NgModule({
   declarations: [
@@ -39,7 +40,7 @@ import {UserService} from "./services/users.service";
     FormsModule,
     HttpClientModule
   ],
-  providers: [AuthService, AuthGuardService, UserService,
+  providers: [AuthService, AuthGuardService, UserService, DataService,
     {
       provide: JwtHelperService,
       useFactory: () => new JwtHelperService()

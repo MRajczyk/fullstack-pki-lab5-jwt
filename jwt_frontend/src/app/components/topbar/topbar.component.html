@@ -1,13 +1,27 @@
 <mat-toolbar class = mat-toolbar>
   <button class="buttons" aria-label="Example icon-button with menu icon">
-    <mat-icon>menu</mat-icon>
+    <mat-icon (click)="onMenuClick()">Menu</mat-icon>
   </button>
-  <span>My App</span>
   <span class="example-spacer"></span>
-  <button class="buttons" aria-label="Example icon-button with heart icon">
-    <mat-icon>Register</mat-icon>
-  </button>
-  <button class="buttons" aria-label="Example icon-button with share icon">
-    <mat-icon (click)="onLogoutClick()"></mat-icon>
-  </button>
+  <span><b>My App</b></span>
+  <span class="example-spacer"></span>
+  <div class="rightsideButtons">
+    <button class="buttonsRight" *ngIf="!authService.isAuthenticated()">
+      <mat-icon (click)="onRegisterClick()">Register</mat-icon>
+    </button>
+    <button class="buttonsRight" *ngIf="!authService.isAuthenticated()">
+      <mat-icon (click)="onLoginClick()">Login</mat-icon>
+    </button>
+    <!-- TODO: show only when has admin role -->
+    <button class="buttonsRight" *ngIf="authService.isAuthenticated()">
+      <mat-icon (click)="onAdminClick()">Admin</mat-icon>
+    </button>
+    <!-- TODO: show only when has user or admin role -->
+    <button class="buttonsRight" *ngIf="authService.isAuthenticated()">
+      <mat-icon (click)="onLoggedInClick()">LoggedIn</mat-icon>
+    </button>
+    <button class="buttonsRight" *ngIf="authService.isAuthenticated()">
+      <mat-icon (click)="onLogoutClick()">Logout</mat-icon>
+    </button>
+  </div>
 </mat-toolbar>

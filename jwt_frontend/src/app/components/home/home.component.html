@@ -1,6 +1,6 @@
-<p>home works!</p>
-<ol>
-  <li *ngFor="let user of users">
-    <div class="list-item-name"><b>{{user._id}}</b> {{ user.email }}</div>
+<ol *ngIf="data">
+  <li *ngFor="let publicData of data.data">
+    <span><b>status:</b>{{data.status}}</span>
+    <div class="list-item-name"><b>id:</b>{{publicData._id }}{{'\u00A0'}}{{'\u00A0'}}<b>message</b>:{{publicData.name}}{{'\u00A0'}}{{'\u00A0'}}<b>required role</b>:{{publicData.requiredRole === '' ? 'none' : publicData.requiredRole}}</div>
   </li>
 </ol>

@@ -1,1 +1,5 @@
-<p>logged-in works!</p>
+<!--TODO: Add checking roles-->
+<div *ngIf="authService.isAuthenticated()">
+  <p>Logged-in works!</p>
+</div>
+<app-login *ngIf="!authService.isAuthenticated()"></app-login>

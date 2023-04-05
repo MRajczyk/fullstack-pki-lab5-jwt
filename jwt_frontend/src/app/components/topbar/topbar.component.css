@@ -10,6 +10,15 @@
   padding: 5px;
 }
 
+.buttonsRight {
+  margin-left: 10px;
+  display: inline-flex;
+}
+
+mat-icon {
+  width: 100%;
+}
+
 .mat-toolbar-row, .mat-toolbar-single-row {
   display: flex;
   justify-content: space-between;
@@ -32,7 +41,7 @@
   height: 64px;
 }
 .mat-toolbar {
-  background: whitesmoke;
+  background: lightblue;
   color: #000000de;
 }
 .docs-markdown p, .docs-markdown ul, .docs-markdown ol {

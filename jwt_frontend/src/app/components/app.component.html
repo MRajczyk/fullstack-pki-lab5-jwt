@@ -1,11 +1,9 @@
-<div *ngIf="authService.isAuthenticated()">
-  <nav class="top-bar-content">
-    <app-topbar></app-topbar>
-  </nav>
-  <main class="router-outlet-content">
-    <router-outlet></router-outlet>
-  </main>
-</div>
-<app-login *ngIf="!authService.isAuthenticated()"></app-login>
+<nav class="top-bar-content">
+  <app-topbar></app-topbar>
+</nav>
+<main class="router-outlet-content">
+  <router-outlet></router-outlet>
+</main>
+
 
 
