@@ -3,5 +3,8 @@ export interface User {
   name: string,
   password: string,
   email: string,
-  role: string,
+  roles: [string],
+  registerDate: string,
+  accepted: boolean,
+  acceptDeadline: string,
 }
