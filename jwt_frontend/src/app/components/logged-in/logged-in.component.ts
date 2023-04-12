@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from "../../services/auth.service";
+import {DataService} from "../../services/data.service";
+import {Data} from "../../models/data-model";
 
 @Component({
   selector: 'app-logged-in',
@@ -8,9 +10,18 @@ import {AuthService} from "../../services/auth.service";
 })
 export class LoggedInComponent implements OnInit {
 
-  constructor(public authService: AuthService) { }
+  constructor(private dataService: DataService, public authService: AuthService) { }
+
+  data: Data | undefined = undefined;
+  onGetPublicData() {
+    this.dataService.getLoggedInData()
+      .subscribe((msg) => {
+        this.data = msg;
+      })
+  }
 
   ngOnInit(): void {
+    this.onGetPublicData();
   }
 
 }
