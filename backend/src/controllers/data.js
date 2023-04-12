@@ -1,5 +1,6 @@
-import { DataModel } from '../models/data.js' 
-import { decodeJwt } from '../util/utij.js'
+import { DataModel } from '../models/data.js';
+import { decodeJwt } from '../util/utij.js';
+import {collect} from 'collect.js';
 
 export const getPublicData = async (req, res, next) => {
     const data = await DataModel.find({$or:[{requiredRole: ""}]});
@@ -15,7 +16,7 @@ export const getPublicData = async (req, res, next) => {
 
 export const getLoggedUserData = async (req, res, next) => {
     const reqUserRole = decodeJwt(req.headers.authorization.split(" ")[1]).rol;
-    if(reqUserRole !== "USER" && reqUserRole !== "ADMIN") {
+    if(!collect(reqUserRole).contains('USER') && !collect(reqUserRole).contains('ADMIN')) {
         res.status(401).send({message: "Unauthorized"});
         next();
         return;
@@ -33,7 +34,7 @@ export const getLoggedUserData = async (req, res, next) => {
 
 export const getAdminData = async (req, res, next) => {
     const reqUserRole = decodeJwt(req.headers.authorization.split(" ")[1]).rol;
-    if(reqUserRole !== "ADMIN") {
+    if(!collect(reqUserRole).contains('ADMIN')) {
         res.status(401).send({message: "Unauthorized"});
         next();
         return;
