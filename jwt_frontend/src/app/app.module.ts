@@ -20,6 +20,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {TokenInterceptorService} from "./services/token-interceptor.service";
 import {UserService} from "./services/users.service";
 import {DataService} from "./services/data.service";
+import { ShowLoginDataComponent } from './components/show-login-data-component/show-login-data.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import {DataService} from "./services/data.service";
     LoggedInComponent,
     AdminComponent,
     TopbarComponent,
+    ShowLoginDataComponent,
   ],
   imports: [
     BrowserModule,

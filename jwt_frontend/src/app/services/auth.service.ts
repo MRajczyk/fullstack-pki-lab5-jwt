@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import {BehaviorSubject, Observable} from "rxjs";
 import {environment} from "../../environments/environment";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {LoginResponseModel} from "../models/login-response-model";
+import {collect} from 'collect.js';
 
 @Injectable()
 export class AuthService {
@@ -17,12 +18,16 @@ export class AuthService {
   public hasRegisterErrors$ = this.hasRegisterErrors.asObservable();
 
   constructor(public jwtHelper: JwtHelperService, private http: HttpClient, private router: Router) {}
-  // ...
+
   public isAuthenticated(): boolean {
     const token = sessionStorage.getItem('token');
-    // Check whether the token is expired and return
-    // true or false
-    return !this.jwtHelper.isTokenExpired(token);
+    return !token ? false : token !== '';
+  }
+
+  hasAdminPrivileges() {
+    // @ts-ignore
+    const reqUserRoles = sessionStorage.getItem('roles') !== null ? JSON.parse(sessionStorage.getItem('roles')) : ''
+    return collect(reqUserRoles).contains('ADMIN');
   }
 
   logIn(email: string, password: string) {
@@ -34,6 +39,8 @@ export class AuthService {
     returnVal.subscribe({
       next: returnVal => {
         sessionStorage.setItem('token', returnVal.accessToken);
+        sessionStorage.setItem('refresh-token', returnVal.refreshToken);
+        sessionStorage.setItem('roles', JSON.stringify(returnVal.roles));
 
         if(!environment.production) {
           console.log('token: ', returnVal.accessToken);
@@ -47,6 +54,14 @@ export class AuthService {
         console.log(err.message);
       }
     });
+  }
+
+  refreshToken() {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${sessionStorage.getItem('refresh-token')}` });
+    let options = { headers: headers };
+    return this.http.post<LoginResponseModel>(environment.url + this.endpoint + '/refresh', null, options);
   }
 
   register(email: string, password: string, name: string) {
@@ -73,5 +88,7 @@ export class AuthService {
 
   logOut(): void {
     sessionStorage.removeItem('token');
+    sessionStorage.removeItem('refresh-token');
+    sessionStorage.removeItem('roles');
   }
 }

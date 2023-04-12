@@ -12,15 +12,14 @@ export class HomeComponent {
   constructor(private dataService: DataService) { }
 
   data: Data | undefined = undefined;
-  onGetUsers() {
+  onGetPublicData() {
     this.dataService.getPublicData()
       .subscribe((msg) => {
-        console.log(msg);
         this.data = msg;
       })
   }
 
   ngOnInit(): void {
-    this.onGetUsers();
+    this.onGetPublicData();
   }
 }

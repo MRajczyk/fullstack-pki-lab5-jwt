@@ -6,6 +6,9 @@
   <span><b>My App</b></span>
   <span class="example-spacer"></span>
   <div class="rightsideButtons">
+    <button class="buttonsRight" *ngIf="authService.isAuthenticated()">
+      <mat-icon (click)="onLoggedInfoClick()">Login info</mat-icon>
+    </button>
     <button class="buttonsRight" *ngIf="!authService.isAuthenticated()">
       <mat-icon (click)="onRegisterClick()">Register</mat-icon>
     </button>

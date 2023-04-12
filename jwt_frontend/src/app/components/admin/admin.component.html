@@ -1,9 +1,22 @@
 <div *ngIf="authService.isAuthenticated()">
-  <p>Admin works!</p>
-  <ol>
-    <li *ngFor="let user of users">
-      <div class="list-item-name"><b>{{user._id}}</b> {{ user.email }}</div>
-    </li>
-  </ol>
+  <div *ngIf="authService.hasAdminPrivileges()">
+    <p>Admin works!</p>
+    <ol *ngIf="data">
+      <li *ngFor="let publicData of data.data">
+        <span><b>status:</b>{{data.status}}</span>
+        <div class="list-item-name"><b>id:</b>{{publicData._id }}{{'\u00A0'}}{{'\u00A0'}}<b>message</b>:{{publicData.name}}{{'\u00A0'}}{{'\u00A0'}}<b>required role</b>:{{publicData.requiredRole === '' ? 'none' : publicData.requiredRole}}</div>
+      </li>
+    </ol>
+    <ol>
+      <p>=======================================================================================</p>
+      <li *ngFor="let user of users">
+        <div class="list-item-name"><b>User: {{user.name}}</b> ({{user._id}})<br>email: {{ user.email }} <b>Accepted: </b>{{user.accepted}}<br>Accept deadline: {{user.acceptDeadline}}</div>
+        <button *ngIf="!user.accepted" (click)="onVerifyUser(user._id)">Accept!</button>
+      </li>
+    </ol>
+  </div>
+  <div *ngIf="!authService.hasAdminPrivileges()">
+    <p><b>Admin role is required to view this content!</b></p>
+  </div>
 </div>
 <app-login *ngIf="!authService.isAuthenticated()"></app-login>

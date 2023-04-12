@@ -16,6 +16,11 @@ export class TopbarComponent implements OnInit {
 
   onLogoutClick() {
     this.authService.logOut();
+    this.router.navigate(['/']);
+  }
+
+  onLoggedInfoClick() {
+    this.router.navigate(['/login-info']);
   }
 
   onMenuClick() {
