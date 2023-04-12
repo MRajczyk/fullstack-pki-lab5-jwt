@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import routes from './routes.js'
 import { config } from '../config.js';
+import { UserModel } from "./models/user.js";
 import { initializeUser } from './seed/user-seeder.js'
 import { initializeData } from './seed/data-seeder.js'
 
@@ -19,11 +20,10 @@ app.get('/', (req, res) => {
 
 // Connect to MongoDB 
 mongoose.connect(config.URI_MONGO, { 
-  useNewUrlParser: true 
+  useNewUrlParser: true
 }).catch(err => console.log('Error: Could not connect to MongoDB.', err)); 
 
- 
-mongoose.connection.on('connected', () => { 
+mongoose.connection.on('connected', () => {
   initializeUser().then((err) => {
     if(err) {
       console.log(err.message);
@@ -39,7 +39,7 @@ mongoose.connection.on('connected', () => {
 }); 
 mongoose.connection.on('error', (err) => { 
   console.log('Error: Could not connect to MongoDB.', err); 
-}); 
+});
 
 // Routes app 
 app.use('/', routes); 

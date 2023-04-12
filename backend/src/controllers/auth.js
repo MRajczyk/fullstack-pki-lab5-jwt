@@ -17,19 +17,19 @@ export const generateTokens = (req, user) => {
     const ACCESS_TOKEN = jwt.sign(
         {
             sub: user._id,
-            rol: user.role,
+            rol: user.roles,
             type: "ACCESS_TOKEN",
         },
         config.TOKEN_SECRET_JWT,
         {
-            expiresIn: "1h",
+            expiresIn: "5000",
         }
     );
 
     const REFRESH_TOKEN = jwt.sign(
         {
             sub: user._id,
-            rol: user.role,
+            rol: user.roles,
             type: "REFRESH_TOKEN",
         },
         config.TOKEN_SECRET_JWT,
@@ -49,7 +49,7 @@ export const createUser = async (req, res, next) => {
     await validateEmailAccessibility(req.body.email).then(async (valid) => {
         if (valid) {
             try {
-                const createdUser = await UserModel.create({
+                const createdUser = UserModel.create({
                     name: req.body.name,
                     email: req.body.email,
                     password: req.body.password,
@@ -82,7 +82,7 @@ export const loginUser = async (req, res, next) => {
     try {
         const passwOk = bcrypt.compareSync(password, userDoc.password);
         if(passwOk) {
-            res.json(generateTokens(req, userDoc));
+            res.json(Object.assign(generateTokens(req, userDoc), { 'roles': userDoc.roles }));
         } 
         else {
             res.status(401).json('Wrong credentials!');
@@ -119,31 +119,31 @@ export const accessTokenVerify = (req, res, next) => {
 
 // Verify refreshToken
 export const refreshTokenVerify = (req, res, next) => {
-    if (!req.body.refreshToken) {
-        res.status(401).send({
+    if (!req.headers.authorization) {
+        res.status(403).send({
             message: "Token refresh is missing",
         });
     }
+
     const BEARER = "Bearer";
-    const REFRESH_TOKEN = req.body.refreshToken.split(" ");
+    const REFRESH_TOKEN = req.headers.authorization.split(" ");
     if (REFRESH_TOKEN[0] !== BEARER) {
-        return res.status(401).send({
+        return res.status(403).send({
             error: "Token is not complete",
         });
     }
-    jwt.verify(REFRESH_TOKEN[1], config.TOKEN_SECRET_JWT, function (err, payload) {
+    jwt.verify(REFRESH_TOKEN[1], config.TOKEN_SECRET_JWT, async function (err, payload) {
         if (err) {
-            return res.status(401).send({
+            return res.status(403).send({
                 error: "Token refresh is invalid",
             });
         }
-        UserModel.findById(payload.sub, function (err, person) {
-            if (!person) {
-                return res.status(401).send({
-                    error: "Person not found",
-                });
-            }
-            return res.json(generateTokens(req, person));
-        });
+        const userDoc = await UserModel.findById(payload.sub);
+        if(!userDoc) {
+            return res.status(403).send({
+                error: "User no longer exists in the database.",
+            });
+        }
+        return res.json(Object.assign(generateTokens(req, userDoc), { 'roles': userDoc.roles }));
     });
 };

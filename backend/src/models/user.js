@@ -22,19 +22,35 @@ const UserSchema = new Schema({
     required: true,
     select: true
   }, 
-  role: { 
-    type: String, 
+  roles: {
+    type: [String],
     trim: true, 
-    default: 'USER' 
-  } 
+    default: ['USER']
+  },
+  registerDate: {
+    type: Date,
+    trim: true,
+    default: new Date()
+  },
+  accepted: {
+    type: Boolean,
+    trim: true,
+    default: false
+  },
+  acceptDeadline: {
+    type: Date,
+    trim: true,
+    default: () => new Date(Date.now() + 1*60*1000)
+  },
 },
 { 
   versionKey: false 
-}) 
+})
+UserSchema.index({"acceptDeadline": 1}, { expireAfterSeconds: 0, partialFilterExpression: {"accepted": false} });
 
 UserSchema.pre('save', async function (next) {
-  this.password = await bcrypt.hashSync(this.password, saltRounds)
-  next()
+  this.password = await bcrypt.hashSync(this.password, saltRounds);
+  next();
 })
 
 export const UserModel = model('User', UserSchema);
