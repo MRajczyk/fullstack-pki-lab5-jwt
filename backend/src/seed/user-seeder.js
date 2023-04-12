@@ -7,13 +7,14 @@ async function doUsersExist() {
 
 // Initialize first user 
 export const initializeUser = async () => {
-  if(!await doUsersExist()) { 
+  if(!await doUsersExist()) {
     const user = await UserModel.create({ 
-        role: "ADMIN", 
+        roles: ["ADMIN"],
         name: "admin", 
         email: "admin@admin.com", 
-        password: "admin"
-      }) 
+        password: "admin",
+        accepted: true
+      })
     
     let done = 0; 
     for (let i = 0; i < user.length; i++) { 
